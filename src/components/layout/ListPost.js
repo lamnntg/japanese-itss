@@ -46,7 +46,7 @@ class Post extends Component {
                 <DeleteOutlined />
             </Button>,
             ]}
-            avatar={{ src: 'https://avatars1.githubusercontent.com/u/60763388?s=460&u=1011ca50a99ede598aef7569fc793ce1e4d6f5ce&v=4' }}
+            avatar={{ src: 'https://pbs.twimg.com/profile_images/920013284991889416/MGr9GMmX.jpg' }}
         >
             <Content>
             <Paragraph  ellipsis={{ rows: 3, expandable: true }}>
