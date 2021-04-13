@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useSate } from 'react';
 import TagListItem from "./TagList.js"
 import SubmitForm from "./TagForm.js"
 import './App.css';
 
-class App extends Component {
-  constructor(props){
-    super(props);
-
-    this.state = {
+function App ({props}) {
+  const [state, setState] = useSate({
       taglist : [
         {
           tag: "#comedy",
@@ -17,25 +14,25 @@ class App extends Component {
         }
       ],
       current: null
-    }
-    this.MarkCurrent = this.MarkCurrent.bind(this);
-    this.handleAddTag = this.handleAddTag.bind(this);
-  }
+    })
+    //this.MarkCurrent = this.MarkCurrent.bind(this);
+    //this.handleAddTag = this.handleAddTag.bind(this);
+  
 
   handleAddTag = (item) => {
-    this.state.taglist.push(item);
-    this.setState({ taglist: this.state.taglist });
+    state.taglist.push(item);
+    setState({ taglist: state.taglist });
   };
 
-  MarkCurrent = index => {
-    this.state.current = this.state.taglist[index]
-    this.setState({ taglist: this.state.taglist });
-    this.setState({ current: this.state.current });
+  MarkCurrent = (index) => {
+    state.current = state.taglist[index]
+    setState({ taglist: state.taglist });
+    setState({ current: state.current });
   };
   
 
-  render() {
-    let items = this.state.taglist.map((item, index) => {
+  
+    let items = state.taglist.map((item, index) => {
       let result = ""
       if (item) {
         result = <TagListItem
@@ -60,7 +57,7 @@ class App extends Component {
         </div>
       </div>
     );
-  }
 }
+
 
 export default App;

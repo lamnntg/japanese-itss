@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Componentm, useSate } from 'react';
 import './TagList.css';
 
-class TagListItem extends Component {
-  render() {
+function TagListItem ({props}) {
+  
 
     return (
-      <div  onClick ={this.props.onClick}>
-        <div className={this.props.current === this.props.tag ? 'yes' : 'no'} >  {this.props.tag}</div>
+      <div  onClick ={props.onClick}>
+        <div className={props.current === this.props.tag ? 'yes' : 'no'} >  {this.props.tag}</div>
       </div>
     );
-  }
+  
 }
 
 
