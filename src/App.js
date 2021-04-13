@@ -1,6 +1,8 @@
 import React, {useState} from "react";
 import logo from './logo.svg';
 import './App.css';
+import AddTag from "./components/addTag";
+import FormUpdatePost from "./components/formUpdatePost";
 import ListPost from "./components/layout/ListPost";
 import TagList from "./components/layout/TagList";
 import NavBar from "./components/layout/NavBar";
