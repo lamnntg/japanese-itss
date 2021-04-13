@@ -154,7 +154,7 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
-                  
+
                 >
                   Save
                 </button>

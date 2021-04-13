@@ -1,6 +1,8 @@
 import React, {useState} from "react";
 import logo from './logo.svg';
 import './App.css';
+import FormUpdatePost from "./components/formUpdatePost/";
+import FormCreatePost from "./components/formCreatePost/index";
 import ListPost from "./components/layout/ListPost";
 import TagList from "./components/layout/TagList";
 import NavBar from "./components/layout/NavBar";
@@ -16,6 +18,8 @@ function App() {
   const { Header, Content, Footer } = Layout;
   const [filterTagList, setFilterTagList] = useState(["All"]);
   const [tagList, setTagList] = useState(["All","React","Blockchain","PHP","BrSE","AI"])
+  const [isUpdatePost, setIsUpdatePost] = useState(false);
+  const [isCreatePost, setIsCreatePost] = useState(true);
   const [userInfo, setUserInfo] = useState({
     name: "Group 2",
     age: 18,
@@ -24,8 +28,8 @@ function App() {
     technology: "Python, NodeJS, ReactJS",
     hobby: "Reading Books, Travel"
   })
-  const currentPage = ['index']
-
+  const [currentPage, setCurrentPage] = useState(['index']);
+  const idUpdatePost = -1;
   const [postLists, setPostLists] = useState ([
     {
       id: 1,
@@ -57,6 +61,26 @@ function App() {
     },
   ])
 
+  const handleCloseFormUpdatePost = (value) => {
+    setIsUpdatePost(value);
+  };
+
+  const onToggleFormUpdatePost = () => {
+    let result = null;
+    isUpdatePost
+      ? (result = (
+          <FormUpdatePost
+            closeFormUpdatePost={handleCloseFormUpdatePost}
+            updatePost={handleUpdatePost}
+            id={idUpdatePost}
+            postLists={postLists}
+            tagList={tagList}
+          />
+        ))
+      : (result = "");
+    return result;
+  };
+
   const renderPostList = (filterTagList) => {
     let renderPostList = [];
     if (filterTagList.length == 1 && filterTagList[0] == "All") {
@@ -69,12 +93,44 @@ function App() {
       <ListPost
         key={index}
         post={post}
-        createPost={(value1, value2) => this.setState({ isUpdatePost: value1, idUpdatePost: value2})}
-        onClick={() => this.deletePost(post)}
+        createPost={(value1, value2) => {
+          setIsCreatePost(value1);
+          setIsUpdatePost(value2);
+        }}
+        onClick={() => deletePost(post)}
       />
   )));
   }
   
+  const deletePost = (value) => {
+    const newData = postLists.filter((post) => post!==value);
+    setPostLists(newData);
+  }
+
+  const searchIndex = (id) => {
+    let result = -1;
+    postLists.forEach((postList, index) => {
+      if (postList.id === id) result = index;
+    });
+    return result;
+  };
+
+  const handleUpdatePost = (value) => {
+    let index = searchIndex(value.id);
+    if (index !== -1) {
+      setPostLists(
+          ...postLists.slice(0, index),
+          {
+            id: value.id,
+            title: value.title,
+            dateCreate: new Date().toLocaleString('ja-JP',dateFormat),
+            content: value.content,
+            selectedTag: value.selectedTag
+          },
+          ...postLists.slice(index + 1),
+      );
+    }
+  }; 
   const handleChangeFilterTag = (tag, checked) => {
     let nextSelectedTags = [];
     if (checked && tag === "All") {
@@ -92,10 +148,36 @@ function App() {
     }
     setFilterTagList(nextSelectedTags);
   }
+  
+  const findMaxIndex = () => {
+    let idArray = postLists.map(post => post.id);
+    return Math.max(...idArray);
+  }
+
+  const handleCreatePost = (value) => {
+    let newTagList = [...new Set([...tagList, ...value.selectedTag])];
+    let index = findMaxIndex();
+    const newData = postLists.concat([{
+      id: index + 1,
+      title: value.title,
+      dateCreate: new Date().toLocaleString('ja-JP',dateFormat),
+      content: value.content,
+      selectedTag: value.selectedTag,
+    }]);
+
+    setPostLists(newData);
+    setTagList(newTagList);
+    setCurrentPage('index');
+  };
+  const onClickChangePage = e => {
+    setCurrentPage(e.key);
+  };
 
   return (
     <Layout className="layout" style={{background: "#fff"}}> 
         <NavBar
+            currentPage = {currentPage}
+            onClickChangePage = {onClickChangePage}
         />
         {currentPage == 'index' ? 
           <>
@@ -116,17 +198,36 @@ function App() {
             <br />
             <br />
           </div>
-          <div>
-            <TagList
-                tagList = {tagList}
-                filterTagList = {filterTagList}
-                handleChangeFilterTag = {handleChangeFilterTag}
-              />
-            {renderPostList(filterTagList)}
-          </div>
           </>
           : null
         }
+
+        <Content style={{ padding: '0 100px', marginTop: 0, minHeight: '90vh' }}>  
+          <div className="site-layout-content">
+
+            {currentPage == 'create' ?
+              <FormCreatePost
+                createPost={handleCreatePost}
+                postLists={postLists}
+                tagList={tagList}
+              />
+              : null
+            }
+            
+            {currentPage == 'index' && !isUpdatePost ? 
+              <>
+              <TagList
+                 tagList = {tagList}
+                 filterTagList = {filterTagList}
+                 handleChangeFilterTag = {handleChangeFilterTag}
+              />
+              {renderPostList(filterTagList)}
+              {onToggleFormUpdatePost()}
+              </>
+              : <div>{onToggleFormUpdatePost()}</div>
+            }
+          </div>
+        </Content>
         <Footer style={{ textAlign: 'center' }}>Group 2 ©2021 ITSS</Footer>
       </Layout>
   );
