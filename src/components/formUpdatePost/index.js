@@ -6,7 +6,7 @@ const { Option } = Select;
 const children = [];
 const defaultTags = [];
 
-function FormUpdatePost({props}) {
+function FormUpdatePost(props) {
     const [state, setState] = useState({
         id: -1,
         title: "",
