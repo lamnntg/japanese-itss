@@ -127,7 +127,7 @@ function App() {
           </>
           : null
         }
-        <Footer style={{ textAlign: 'center' }}>Group 2 ©2022 ITSS</Footer>
+        <Footer style={{ textAlign: 'center' }}>Group 2 ©2021 ITSS</Footer>
       </Layout>
   );
 }
