@@ -22,7 +22,7 @@ function FormUpdatePost(props) {
     return result;
   }
 
-  const componentDidMount() {
+  const componentDidMount = () => {
     const { postLists } = props;
     let index = searchIndex(props.id);
     if(index !== -1) {
