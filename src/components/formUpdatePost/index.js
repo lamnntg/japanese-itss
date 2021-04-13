@@ -153,7 +153,6 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
-                  onClick={onAddTag}
                 >
                   Save
                 </button>
