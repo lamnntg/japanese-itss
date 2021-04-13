@@ -14,6 +14,24 @@ function FormUpdatePost(props) {
         selectedTag: []
     });
 
+    const loadData = () => {
+      const { postLists } = props;
+      children.length = 0;
+      defaultTags.length = 0;
+      props.tagList.forEach((tag, index) => {
+        if(tag!=='All') children.push(<Option key={index} value={tag}>{tag}</Option>);
+      });
+  
+      let index = searchIndex(props.id);
+      if(index !== -1) {
+        postLists[index].selectedTag.forEach((tag,index) => {
+          defaultTags.push(tag);
+        });
+      };
+    }
+
+    loadData;
+
   const searchIndex = (id) => {
     let result = -1;
     props.postLists.forEach((postList, index) => {
@@ -56,29 +74,12 @@ function FormUpdatePost(props) {
     props.closeFormUpdatePost(false);
   };
 
-  const loadData = () => {
-    const { postLists } = props;
-    children.length = 0;
-    defaultTags.length = 0;
-    props.tagList.forEach((tag, index) => {
-      if(tag!=='All') children.push(<Option key={index} value={tag}>{tag}</Option>);
-    });
-
-    let index = searchIndex(props.id);
-    if(index !== -1) {
-      postLists[index].selectedTag.forEach((tag,index) => {
-        defaultTags.push(tag);
-      });
-    };
-  }
-  
-
   const handleChange = (value) => {
     setState({selectedTag: value});
   }
 
-
     return (
+     
       <div
         id="exampleModalCenter"
         tabIndex="-1"
@@ -153,7 +154,7 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
-                  onClick={onAddTag}
+                  
                 >
                   Save
                 </button>
