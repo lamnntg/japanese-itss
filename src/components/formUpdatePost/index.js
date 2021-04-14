@@ -146,7 +146,7 @@ function FormUpdatePost(props) {
                   size="large" 
                   mode="tags" 
                   style={{ width: '100%' }} 
-                  placeholder="Select Tag" 
+                  placeholder="Select Tag"    
                   onChange={handleChange}
                   defaultValue={defaultTags}
                 >
