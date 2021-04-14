@@ -29,7 +29,7 @@ function App() {
     hobby: "Reading Books, Travel"
   })
   const [currentPage, setCurrentPage] = useState(['index']);
-  const idUpdatePost = -1;
+  const [idUpdatePost, setIdUpdatePost] = useState([-1]);
   const [postLists, setPostLists] = useState ([
     {
       id: 1,
@@ -96,6 +96,7 @@ function App() {
         createPost={(value1, value2) => {
           setIsCreatePost(value1);
           setIsUpdatePost(value2);
+          setIdUpdatePost(value2);
         }}
         onClick={() => deletePost(post)}
       />

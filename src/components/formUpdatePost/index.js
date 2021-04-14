@@ -14,27 +14,46 @@ function FormUpdatePost(props) {
         selectedTag: []
     });
 
-  const searchIndex = (id) => {
-    let result = -1;
-    props.postLists.forEach((postList, index) => {
-      if(postList.id === id) result = index;
-    });
-    return result;
-  }
+    const searchIndex = (id) => {
+      let result = -1;
+      props.postLists.forEach((postList, index) => {
+        if(postList.id === id) result = index;
+      });
+      return result;
+    }
+
+    const loadData = () => {
+      const { postLists } = props;
+      children.length = 0;
+      defaultTags.length = 0;
+      props.tagList.forEach((tag, index) => {
+        if(tag!=='All') children.push(<Option key={index} value={tag}>{tag}</Option>);
+      });
+  
+      let index = searchIndex(props.id);
+      if(index !== -1) {
+        postLists[index].selectedTag.forEach((tag,index) => {
+          defaultTags.push(tag);
+        });
+      };
+    }
+
+    loadData();
 
   const componentDidMount = () => {
     const { postLists } = props;
     let index = searchIndex(props.id);
     if(index !== -1) {
       setState({
-        id: index + 1,
+        id: props.id,
         title: postLists[index].title,
         // dateCreate: postLists[index].dateCreate,
         content: postLists[index].content,
-        selectedTag: defaultTags,
+        selectedTag: postLists[index].selectedTag
       });
     }
   }
+ if(state.id == -1) componentDidMount();
 
   const onCloseFormUpdatePost = (value) => {
     props.closeFormUpdatePost(value);
@@ -48,6 +67,7 @@ function FormUpdatePost(props) {
     setState({
       [name]: value,
     });
+    console.log(state.title+" "+state.content);
   };
 
   const onHandleSubmit = (event) => {
@@ -56,29 +76,21 @@ function FormUpdatePost(props) {
     props.closeFormUpdatePost(false);
   };
 
-  const loadData = () => {
-    const { postLists } = props;
-    children.length = 0;
-    defaultTags.length = 0;
-    props.tagList.forEach((tag, index) => {
-      if(tag!=='All') children.push(<Option key={index} value={tag}>{tag}</Option>);
-    });
-
-    let index = searchIndex(props.id);
-    if(index !== -1) {
-      postLists[index].selectedTag.forEach((tag,index) => {
-        defaultTags.push(tag);
-      });
-    };
-  }
-  
-
   const handleChange = (value) => {
     setState({selectedTag: value});
   }
 
+  const saveUpdate = () => {
+    const index = searchIndex(props.id);
+    props.postLists[index].title = state.title;
+    props.postLists[index].content = state.content;
+    props.postLists[index].selectedTag = state.selectedTag;
+
+    console.log(props.postLists[index]);
+  }
 
     return (
+     
       <div
         id="exampleModalCenter"
         tabIndex="-1"
@@ -119,7 +131,7 @@ function FormUpdatePost(props) {
                 </div>
                 <div className="form-group">
                   <label htmlFor="content">Content:</label>
-                  <textarea
+                  <input
                     type="text"
                     name="content"
                     id="content"
@@ -134,7 +146,7 @@ function FormUpdatePost(props) {
                   size="large" 
                   mode="tags" 
                   style={{ width: '100%' }} 
-                  placeholder="Select Tag" 
+                  placeholder="Select Tag"    
                   onChange={handleChange}
                   defaultValue={defaultTags}
                 >
@@ -153,6 +165,7 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
+                  onClick={saveUpdate}
                 >
                   Save
                 </button>
