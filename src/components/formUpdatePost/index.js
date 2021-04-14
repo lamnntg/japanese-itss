@@ -1,11 +1,8 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState ,useEffect} from "react";
 import './FormUpdatePost.css';
 import { Tag, Input, Tooltip, Button, Select } from 'antd';
 
 const { Option } = Select;
-const children = [];
-const defaultTags = [];
-
 function FormUpdatePost(props) {
     const [state, setState] = useState({
         id: -1,
@@ -13,47 +10,30 @@ function FormUpdatePost(props) {
         content: "",
         selectedTag: []
     });
+    const [children,setChildren]= useState([])  
+    const [defaultTags,setDefaultTags]= useState([])  
+  const searchIndex = (id) => {
+    let result = -1;
+    props.postLists.forEach((postList, index) => {
+      if(postList.id === id) result = index;
+    });
+    return result;
+  }
 
-    const searchIndex = (id) => {
-      let result = -1;
-      props.postLists.forEach((postList, index) => {
-        if(postList.id === id) result = index;
-      });
-      return result;
-    }
-
-    const loadData = () => {
-      const { postLists } = props;
-      children.length = 0;
-      defaultTags.length = 0;
-      props.tagList.forEach((tag, index) => {
-        if(tag!=='All') children.push(<Option key={index} value={tag}>{tag}</Option>);
-      });
-  
-      let index = searchIndex(props.id);
-      if(index !== -1) {
-        postLists[index].selectedTag.forEach((tag,index) => {
-          defaultTags.push(tag);
-        });
-      };
-    }
-
-    loadData();
-
-  const componentDidMount = () => {
+  useEffect(() => {
     const { postLists } = props;
+    console.log(props);
     let index = searchIndex(props.id);
+    loadData()
     if(index !== -1) {
       setState({
-        id: props.id,
+        id: index + 1,
         title: postLists[index].title,
         // dateCreate: postLists[index].dateCreate,
         content: postLists[index].content,
-        selectedTag: postLists[index].selectedTag
+        selectedTag: postLists[index].selectedTag,
       });
-    }
-  }
- if(state.id == -1) componentDidMount();
+    }},[])
 
   const onCloseFormUpdatePost = (value) => {
     props.closeFormUpdatePost(value);
@@ -65,9 +45,9 @@ function FormUpdatePost(props) {
     const value = target.type === "checkbox" ? target.checked : target.value;
 
     setState({
+      ...state,
       [name]: value,
     });
-    console.log(state.title+" "+state.content);
   };
 
   const onHandleSubmit = (event) => {
@@ -76,21 +56,26 @@ function FormUpdatePost(props) {
     props.closeFormUpdatePost(false);
   };
 
+  const loadData = () => {
+    const { postLists } = props;
+    let result;
+    result= props.tagList.map((tag, index) => {
+      if(tag!=='All') {return <Option key={index} value={tag}>{tag}</Option>};
+    });
+    setChildren(result)
+    let index = searchIndex(props.id);
+    let result2=[]
+  }
+  // console.log(props);
+
   const handleChange = (value) => {
-    setState({selectedTag: value});
+    setState({
+      ...state,
+      selectedTag: value});
   }
-
-  const saveUpdate = () => {
-    const index = searchIndex(props.id);
-    props.postLists[index].title = state.title;
-    props.postLists[index].content = state.content;
-    props.postLists[index].selectedTag = state.selectedTag;
-
-    console.log(props.postLists[index]);
-  }
+  // console.log(state);
 
     return (
-     
       <div
         id="exampleModalCenter"
         tabIndex="-1"
@@ -131,7 +116,7 @@ function FormUpdatePost(props) {
                 </div>
                 <div className="form-group">
                   <label htmlFor="content">Content:</label>
-                  <input
+                  <textarea
                     type="text"
                     name="content"
                     id="content"
@@ -146,9 +131,9 @@ function FormUpdatePost(props) {
                   size="large" 
                   mode="tags" 
                   style={{ width: '100%' }} 
-                  placeholder="Select Tag"    
+                  placeholder="Select Tag" 
                   onChange={handleChange}
-                  defaultValue={defaultTags}
+                  value={state.selectedTag}
                 >
                     {children}
                   </Select>
@@ -165,7 +150,6 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
-                  onClick={saveUpdate}
                 >
                   Save
                 </button>

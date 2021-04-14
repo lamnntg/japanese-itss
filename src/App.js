@@ -29,7 +29,7 @@ function App() {
     hobby: "Reading Books, Travel"
   })
   const [currentPage, setCurrentPage] = useState(['index']);
-  const [idUpdatePost, setIdUpdatePost] = useState([-1]);
+  const [idUpdatePost,setIdUpdatePost] = useState(0);
   const [postLists, setPostLists] = useState ([
     {
       id: 1,
@@ -94,9 +94,10 @@ function App() {
         key={index}
         post={post}
         createPost={(value1, value2) => {
+          // console.log(value1,value2);
           setIsCreatePost(value1);
           setIsUpdatePost(value2);
-          setIdUpdatePost(value2);
+          setIdUpdatePost(value2)
         }}
         onClick={() => deletePost(post)}
       />
@@ -117,18 +118,19 @@ function App() {
   };
 
   const handleUpdatePost = (value) => {
-    let index = searchIndex(value.id);
+    let abc=postLists
+    let index = abc.findIndex(value1=>value1.id===value.id);
+    abc[index]={
+      id: value.id,
+      title: value.title,
+      dateCreate: new Date().toLocaleString('ja-JP',dateFormat),
+      content: value.content,
+      selectedTag: value.selectedTag
+    }
+    // console.log(postLists);
     if (index !== -1) {
       setPostLists(
-          ...postLists.slice(0, index),
-          {
-            id: value.id,
-            title: value.title,
-            dateCreate: new Date().toLocaleString('ja-JP',dateFormat),
-            content: value.content,
-            selectedTag: value.selectedTag
-          },
-          ...postLists.slice(index + 1),
+         abc
       );
     }
   }; 
@@ -173,7 +175,6 @@ function App() {
   const onClickChangePage = e => {
     setCurrentPage(e.key);
   };
-
   return (
     <Layout className="layout" style={{background: "#fff"}}> 
         <NavBar

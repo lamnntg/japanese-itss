@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 // import AddTag from "../addTag";
 import { Tag, Input, Tooltip, Button, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
-const children = [];
+// const children = [];
 
 function FormCreatePost (props) {
 		
@@ -12,27 +12,38 @@ function FormCreatePost (props) {
 	  isAddTag: false,
       tmptitle: '',
       tmpcontent: '',
-      tmpSelectedTag: []
+      tmpSelectedTag: [],
     })
-    
+  const [children,setChildren]= useState([])  
+    useEffect(()=>{
+      loadData()
+    },[])
 
   const loadData = () => {
-    children.length = 0;
-    props.tagList.forEach((tag, index) => {
-      if(tag!=='All') children.push(<Option key={index} value={tag}>{tag}</Option>);
+    let result;
+    result= props.tagList.map((tag, index) => {
+      if(tag!=='All') {return <Option key={index} value={tag}>{tag}</Option>};
     });
+    setChildren(result)
+    // console.log(result);
   }
 
   const handleChange = (value) => {
-    setState({tmpSelectedTag: value});
+    setState({
+      ...state,
+      tmpSelectedTag: value});
   }
   
   const handleTitleChange = (e) => {
-    setState({tmptitle: e.target.value});
+    setState({
+      ...state,
+      tmptitle: e.target.value});
   }
  
   const handleContentChange = (e) => {
-    setState({tmpcontent: e.target.value});
+    setState({
+      ...state,
+      tmpcontent: e.target.value});
   }
 
   const handleSubmit = (e) => {
