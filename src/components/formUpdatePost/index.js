@@ -165,7 +165,7 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
-                  onClick={() => saveUpdate()}
+                  onClick={saveUpdate}
                 >
                   Save
                 </button>
