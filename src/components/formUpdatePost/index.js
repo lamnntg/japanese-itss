@@ -14,6 +14,14 @@ function FormUpdatePost(props) {
         selectedTag: []
     });
 
+    const searchIndex = (id) => {
+      let result = -1;
+      props.postLists.forEach((postList, index) => {
+        if(postList.id === id) result = index;
+      });
+      return result;
+    }
+
     const loadData = () => {
       const { postLists } = props;
       children.length = 0;
@@ -30,29 +38,22 @@ function FormUpdatePost(props) {
       };
     }
 
-    loadData;
-
-  const searchIndex = (id) => {
-    let result = -1;
-    props.postLists.forEach((postList, index) => {
-      if(postList.id === id) result = index;
-    });
-    return result;
-  }
+    loadData();
 
   const componentDidMount = () => {
     const { postLists } = props;
     let index = searchIndex(props.id);
     if(index !== -1) {
       setState({
-        id: index + 1,
+        id: props.id,
         title: postLists[index].title,
         // dateCreate: postLists[index].dateCreate,
         content: postLists[index].content,
-        selectedTag: defaultTags,
+        selectedTag: postLists[index].selectedTag
       });
     }
   }
+ if(state.id == -1) componentDidMount();
 
   const onCloseFormUpdatePost = (value) => {
     props.closeFormUpdatePost(value);
@@ -66,6 +67,7 @@ function FormUpdatePost(props) {
     setState({
       [name]: value,
     });
+    console.log(state.title+" "+state.content);
   };
 
   const onHandleSubmit = (event) => {
@@ -76,6 +78,15 @@ function FormUpdatePost(props) {
 
   const handleChange = (value) => {
     setState({selectedTag: value});
+  }
+
+  const saveUpdate = () => {
+    const index = searchIndex(props.id);
+    props.postLists[index].title = state.title;
+    props.postLists[index].content = state.content;
+    props.postLists[index].selectedTag = state.selectedTag;
+
+    console.log(props.postLists[index]);
   }
 
     return (
@@ -120,7 +131,7 @@ function FormUpdatePost(props) {
                 </div>
                 <div className="form-group">
                   <label htmlFor="content">Content:</label>
-                  <textarea
+                  <input
                     type="text"
                     name="content"
                     id="content"
@@ -154,7 +165,7 @@ function FormUpdatePost(props) {
                 <button
                   type="submit"
                   className="btn btn-outline-success"
-                  
+                  onClick={() => saveUpdate()}
                 >
                   Save
                 </button>

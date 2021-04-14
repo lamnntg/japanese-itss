@@ -18,6 +18,8 @@ class Post extends Component {
   createPost = (value) => {
     this.props.createPost(true, value);
   }
+
+  
   
   render() {
     const {
